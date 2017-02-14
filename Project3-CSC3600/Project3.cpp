@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <string>
 #include <sstream>
-#include "RecordListClass.h"
+//#include "RecordListClass.h"
 using namespace std;
 int lineCount;
 int MAXLINECOUNT;
@@ -79,10 +79,10 @@ void processData(ofstream&dataOUT, ifstream&dataIN) {
 	// Receives – The input and output files
 	// Task - Process each data record/op code.
 	// Returns - Nothing
-	RecordListClass RecordList;
+	//RecordListClass RecordList;
 	bool firstPrint = true;
 
-	RecordType record;
+	//RecordType record;
 	int fieldNumber;
 	string newValue;
 

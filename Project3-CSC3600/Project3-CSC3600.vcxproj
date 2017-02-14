@@ -116,7 +116,7 @@
     <ClInclude Include="Linecounter.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\..\Downloads\queue_in.txt" />
+    <Text Include="queue_in.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
