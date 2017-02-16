@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <string>
 #include <sstream>
-//#include "RecordListClass.h"
+#include "CustomerListClass.h"
 using namespace std;
 int lineCount;
 int MAXLINECOUNT;
@@ -64,9 +64,9 @@ void Header(ofstream &Outfile)
 //*************************************  FUNCTION FOOTER  *********************************************
 void Footer(ofstream &Outfile, int lineCount)
 {
-	// Receives – the output file
-	// Task - Prints the output salutation
-	// Returns - Nothing
+		// Receives – the output file
+		// Task - Prints the output salutation
+		// Returns - Nothing
 	Outfile << endl;
 	Outfile << setw(35) << "-------------------------------- - " << endl;
 	Outfile << setw(35) << " | END OF PROGRAM OUTPUT | " << endl;
@@ -76,65 +76,24 @@ void Footer(ofstream &Outfile, int lineCount)
 }
 //************************************* END OF FUNCTION FOOTER  ***************************************
 void processData(ofstream&dataOUT, ifstream&dataIN) {
-	// Receives – The input and output files
-	// Task - Process each data record/op code.
-	// Returns - Nothing
-	//RecordListClass RecordList;
+		// Receives – The input and output files
+		// Task - Process each data record/op code.
+		// Returns - Nothing
+	CustomerListClass CustomerList;
 	bool firstPrint = true;
 
-	//RecordType record;
+	CustomerType customer;
 	int fieldNumber;
 	string newValue;
 
-	char code;
+	int code;
 	dataIN >> ws >> code >> ws; // seed read first code
 
-	while (code != 'Q') {  // As long as there is another code, read it in
-		switch (code) {
-		case 'A':	// If the code = 'A', first read a record, then insert it into the list.
-			std::getline(dataIN, record.firstName);
-			std::getline(dataIN, record.lastName);
-			std::getline(dataIN, record.address);
-			std::getline(dataIN, record.city);
-			std::getline(dataIN, record.state);
-			std::getline(dataIN, record.zipCode);
-			if (!RecordList.insertRecord(record)) {
-				dataOUT << endl;
-				lineCount++;
-				dataOUT << record.firstName << record.lastName;
-				dataOUT << " is already in list. Attempt to duplicate record failed!";
-			}
-			break;
-		case 'D': // If the code is 'D', first read the name of the record, then delete from the list.
-			std::getline(dataIN, record.firstName);
-			std::getline(dataIN, record.lastName);
-			if (!RecordList.deleteRecord(record)) {
-				dataOUT << endl;
-				lineCount++;
-				dataOUT << "Record of " << record.firstName << record.lastName;
-				dataOUT << " not found. Attempt to delete record failed!";
-			}
-			break;
-		case 'C': // If the op code is a 'C' change the indicated record
-			std::getline(dataIN, record.firstName);
-			std::getline(dataIN, record.lastName);
-			dataIN >> fieldNumber >> ws;
-			std::getline(dataIN, newValue);
-			if (!RecordList.changeRecord(record, fieldNumber, newValue)) {
-				dataOUT << endl;
-				lineCount++;
-				dataOUT << "Record of " << record.firstName << record.lastName;
-				dataOUT << " not found. Attempt to change record failed!";
-			}
-			break;
-		case 'P':
-			if (!firstPrint) { // After the first time printing, start a new page for each list.
-				newPage(dataOUT);
-			}
-			RecordList.printRecords(dataOUT, lineCount);
-			firstPrint = false;
-			break;
-		}
+	while (code != -99) {  // As long as there is another code, read it in
+		customer.tArrival = code;
+		std::getline(dataIN, customer.name);
+		dataIN >> customer.tProcess;
+		CustomerList.insertRecord(customer);
 		dataIN >> ws >> code >> ws; // Read in the next code
 	}
 }
@@ -148,7 +107,7 @@ int main() {
 	lineCount = 0;
 	MAXLINECOUNT = 54;
 
-	dataIN.open("data2.txt"); // Open the file containing data.
+	dataIN.open("queue_in.txt"); // Open the file containing data.
 	dataOUT.open("dataOUT.doc"); // Create and open the file to write data to.		
 	Header(dataOUT); // Print data header.
 	processData(dataOUT, dataIN); // Process each section of data from the input file.

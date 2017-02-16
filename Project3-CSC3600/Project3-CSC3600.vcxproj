@@ -113,7 +113,7 @@
     <ClCompile Include="Project3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Linecounter.h" />
+    <ClInclude Include="CustomerListClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="queue_in.txt" />
