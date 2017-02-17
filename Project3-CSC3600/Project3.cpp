@@ -79,7 +79,7 @@ void processData(ofstream&dataOUT, ifstream&dataIN) {
 		// Receives – The input and output files
 		// Task - Process each data record/op code.
 		// Returns - Nothing
-	CustomerListClass CustomerList;
+	CustomerListClass List1, List2, List3;
 	bool firstPrint = true;
 
 	CustomerType customer;
@@ -93,9 +93,19 @@ void processData(ofstream&dataOUT, ifstream&dataIN) {
 		customer.tArrival = code;
 		std::getline(dataIN, customer.name);
 		dataIN >> customer.tProcess;
-		CustomerList.insertRecord(customer);
+		if (List1.getPTime() <= List2.getPTime() && List1.getPTime() <= List3.getPTime()) {
+			List1.push(customer);
+		}
+		else if (List2.getPTime() <= List3.getPTime()) {
+			List2.push(customer);
+		}
+		else {
+			List3.push(customer);
+		}
+		
 		dataIN >> ws >> code >> ws; // Read in the next code
 	}
+	int i = 0;
 }
 int main() {
 	// Receives – Nothing
