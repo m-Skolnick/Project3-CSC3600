@@ -75,10 +75,26 @@ void Footer(ofstream &Outfile, int lineCount)
 	return;
 }
 //************************************* END OF FUNCTION FOOTER  ***************************************
-void processData(ofstream&dataOUT, ifstream&dataIN) {
+void checkForPops(CustomerListClass&pushedList, CustomerListClass&poppedList,CustomerListClass&List1,
+	CustomerListClass&List2, CustomerListClass&List3, int currentTime) {
+
+	if (List1.checkForPop(currentTime)) {
+		poppedList.push(List1.pop());
+	}
+	else if (List2.checkForPop(currentTime)) {
+		poppedList.push(List2.pop());
+	}
+	else if (List3.checkForPop(currentTime)) {
+		poppedList.push(List3.pop());
+	}
+
+}
+void processData(ifstream&dataIN,CustomerListClass&pushedList,CustomerListClass&poppedList) {
 		// Receives – The input and output files
 		// Task - Process each data record/op code.
 		// Returns - Nothing
+	
+	int currentTime = -1;
 	CustomerListClass List1, List2, List3;
 	bool firstPrint = true;
 
@@ -93,20 +109,41 @@ void processData(ofstream&dataOUT, ifstream&dataIN) {
 		customer.tArrival = code;
 		std::getline(dataIN, customer.name);
 		dataIN >> customer.tProcess;
-		if (List1.getPTime() <= List2.getPTime() && List1.getPTime() <= List3.getPTime()) {
-			List1.push(customer);
-		}
-		else if (List2.getPTime() <= List3.getPTime()) {
-			List2.push(customer);
-		}
-		else {
-			List3.push(customer);
-		}
-		
+
+
+		while (currentTime != customer.tArrival) {
+			currentTime++;
+
+			checkForPops(pushedList, poppedList, List1, List2, List3, currentTime);
+
+			if (currentTime == customer.tArrival) {
+				if (List1.getPTime() <= List2.getPTime() && List1.getPTime() <= List3.getPTime()) {
+					List1.push(customer);
+				}
+				else if (List2.getPTime() <= List3.getPTime()) {
+					List2.push(customer);
+				}
+				else {
+					List3.push(customer);
+				}
+				pushedList.push(customer);
+			}
+			
+		}		
 		dataIN >> ws >> code >> ws; // Read in the next code
 	}
-	int i = 0;
 }
+//*****************************************************************************************************
+void printResults(ofstream&dataOUT,CustomerListClass&pushedList,CustomerListClass&poppedList) {
+	
+	while (!pushedList.isEmpty()&&!poppedList.isEmpty()) {
+		dataOUT << pushedList.pop().name;
+		dataOUT << "    ";
+		dataOUT << poppedList.pop().name << endl;
+	}
+
+}
+//*****************************************************************************************************
 int main() {
 	// Receives – Nothing
 	// Task - Call each necessary function of the program in order
@@ -114,13 +151,16 @@ int main() {
 	// Declare variables used in program.	 
 	ifstream dataIN;
 	ofstream dataOUT;
+	CustomerListClass pushedList, poppedList;
 	lineCount = 0;
 	MAXLINECOUNT = 54;
 
 	dataIN.open("queue_in.txt"); // Open the file containing data.
 	dataOUT.open("dataOUT.doc"); // Create and open the file to write data to.		
 	Header(dataOUT); // Print data header.
-	processData(dataOUT, dataIN); // Process each section of data from the input file.
+	//receiveData(dataIN, pushedList, poppedList);
+	processData(dataIN,pushedList,poppedList); // Process each section of data from the input file.
+	printResults(dataOUT, pushedList, poppedList);
 	newPage(dataOUT); // Insert a page break before the footer
 	Footer(dataOUT, lineCount); // Print footer. 
 	dataIN.close(); // Close input data file. 

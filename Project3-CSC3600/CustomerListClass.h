@@ -27,9 +27,10 @@ struct CustomerType {
 class CustomerListClass {
 public:
 	CustomerListClass();
-	void printRecords(ofstream&, int&);
 	void push(CustomerType);
-	void pop(CustomerType);
+	CustomerType pop();
+	bool checkForPop(int);
+	bool isEmpty();
 	int getPTime();
 private:
 	CustomerType *StartPtr;
@@ -40,37 +41,7 @@ CustomerListClass::CustomerListClass() {
 	StartPtr = NULL;
 }
 //*****************************************************************************************************
-void CustomerListClass::printRecords(ofstream&Outfile, int&lineCount) {
-		// Receives – A the output file, and the line count.
-		// Task - Prints each record in the list.
-		// Returns - Nothing
-	CustomerType  *CurrentPtr;
-		// Initialize a current pointer to the start of the linked list
-	//CurrentPtr = StartPtr;
-		// Check for an Empty List
-	/*if (CurrentPtr == NULL) {
-		Outfile << "List is Empty" << endl;
-		lineCount++;
-		return;
-	}
-	*/	// Print a data header
-	Outfile << endl << "                         MAILING LIST" << endl;
-	Outfile << "Last Name   First Name  Address             City";
-	Outfile << "        State Zip Code" << endl;
-	Outfile << "======================================================================" << endl;
-	lineCount += 4; // Increment the line count by 4
-					// Print each member of the list
-	//while (CurrentPtr != NULL)
-	//{                               //  Print the data
-	//	/*Outfile << CurrentPtr->lastName << CurrentPtr->firstName;
-	//	Outfile << CurrentPtr->address << CurrentPtr->city;
-	//	Outfile << CurrentPtr->state << "    " << CurrentPtr->zipCode << endl;*/
-	//	lineCount++; // Increment the line count for each record
-	//				 //  Move to the next NODE
-	//	CurrentPtr = CurrentPtr->next;
-	//}
-	return;
-}
+
 //*****************************************************************************************************
 
 inline void CustomerListClass::push(CustomerType customer)
@@ -110,7 +81,32 @@ inline int CustomerListClass::getPTime() {
 	}
 	return processTime;
 }
-inline void CustomerListClass::pop(CustomerType customer)
+inline CustomerType CustomerListClass::pop()
 {
+	CustomerType *TempPtr;
+	TempPtr = StartPtr;
+	StartPtr = StartPtr->next;
+	return *TempPtr;
+}
 
+inline bool CustomerListClass::checkForPop(int currentTime)
+{
+	if (StartPtr != NULL) {
+		if (currentTime == StartPtr->tProcess + StartPtr->tArrival) {
+			return true;		}		
+	}
+	else {
+		return false;
+	}
+	
+}
+
+inline bool CustomerListClass::isEmpty()
+{
+	if (StartPtr == NULL) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
